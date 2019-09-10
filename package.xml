@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>darknet_vendor</name>
+  <version>0.1.0</version>
+  <description>CMake wrapper around darknet, an open source neural network framework.</description>
+
+  <author email="sloretz@openrobotics.org">Shane Loretz</author>
+  <maintainer email="sloretz@openrobotics.org">Shane Loretz</maintainer>
+
+  <license>Apache License 2.0</license>
+
+  <buildtool_depend>cmake</buildtool_depend>
+
+  <export>
+    <build_type>cmake</build_type>
+  </export>
+</package>
