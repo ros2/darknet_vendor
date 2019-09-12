@@ -19,6 +19,6 @@
 #define DARKNET_VENDOR_MINOR_VERSION @PROJECT_VERSION_MINOR@
 #define DARKNET_VENDOR_PATCH_VERSION @PROJECT_VERSION_PATCH@
 
-#define DARKNET_GIT_TAG @darknet_git_tag@
+#define DARKNET_GIT_TAG "@darknet_git_tag@"
 
 #endif
