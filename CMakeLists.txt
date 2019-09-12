@@ -7,7 +7,7 @@ project(darknet_vendor VERSION 0.1.0)
 
 # TODO(sloretz) make these options do something
 # option(DARKNET_CUDA "Build darknet with CUDA support" ON)
-# option(DARKNET_OPENCV "Build darknet with OpenCV support" ON)
+option(DARKNET_OPENCV "Build darknet with OpenCV support" ON)
 
 ####################
 # Download Darknet
@@ -148,8 +148,10 @@ if(DARKNET_CUDA)
 endif()
 
 if(DARKNET_OPENCV)
+  find_package(OpenCV REQUIRED)
+  target_include_directories(darknet PRIVATE ${OpenCV_INCLUDE_DIRS})
+  target_link_libraries(darknet PUBLIC ${OpenCV_LIBRARIES})
   target_compile_definitions(darknet PUBLIC OPENCV=1)
-  # TODO(sloretz) find_package opencv
 endif()
 
 # TODO(sloretz) pthread replacement on Windows?
