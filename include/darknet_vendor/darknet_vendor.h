@@ -27,5 +27,6 @@ extern "C"
 }
 #endif
 
-#endif  // RCL__LOGGING_H_
+
+#endif  // DARKNET_VENDOR__DARKNET_VENDOR_H_
 

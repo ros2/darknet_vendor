@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef DARKNET_VENDOR__DARKNET_VENDOR_H_
-#define DARKNET_VENDOR__DARKNET_VENDOR_H_
+#ifndef DARKNET_VENDOR__DARKNET_VERSION_H_
+#define DARKNET_VENDOR__DARKNET_VERSION_H_
 
 #define DARKNET_VENDOR_MAJOR_VERSION @PROJECT_VERSION_MAJOR@
 #define DARKNET_VENDOR_MINOR_VERSION @PROJECT_VERSION_MINOR@
@@ -21,4 +21,4 @@
 
 #define DARKNET_GIT_TAG "@darknet_git_tag@"
 
-#endif
+#endif  // DARKNET_VENDOR__DARKNET_VERSION_H_
