@@ -6,7 +6,7 @@ project(darknet_vendor VERSION 0.1.0)
 ####################
 
 # TODO(sloretz) make these options do something
-# option(DARKNET_CUDA "Build darknet with CUDA support" ON)
+option(DARKNET_CUDA "Build darknet with CUDA support" ON)
 option(DARKNET_OPENCV "Build darknet with OpenCV support" ON)
 
 ####################
@@ -142,9 +142,49 @@ target_include_directories(darknet PUBLIC
 )
 
 if(DARKNET_CUDA)
+  find_package(CUDA REQUIRED)
+
+  find_program(GCC_6_PATH gcc-6)
+  if(CUDA_VERSION VERSION_LESS "9.2" AND GCC_6_PATH)
+    set(CUDA_HOST_COMPILER "${GCC_6_PATH}")
+  endif()
+  message(STATUS "Compiling cuda files with ${CUDA_HOST_COMPILER}")
+
+  if(NOT SET DARKNET_VENDOR_CUDA_FLAGS)
+    # Flags taken from https://arnon.dk/matching-sm-architectures-arch-and-gencode-for-various-nvidia-cards/
+    if(CUDA_VERSION VERSION_GREATER 10)
+      set(DARKNET_VENDOR_CUDA_FLAGS
+        "-arch=sm_50"
+        "-gencode=arch=compute_50,code=sm_50"
+        "-gencode=arch=compute_52,code=sm_52"
+        "-gencode=arch=compute_60,code=sm_60"
+        "-gencode=arch=compute_61,code=sm_61"
+        "-gencode=arch=compute_70,code=sm_70"
+        "-gencode=arch=compute_75,code=sm_75"
+        "-gencode=arch=compute_75,code=compute_75"
+      )
+    elseif(CUDA_VERSION VERSION_GREATER 9)
+      set(DARKNET_VENDOR_CUDA_FLAGS
+        "-arch=sm_50"
+        "-gencode=arch=compute_50,code=sm_50"
+        "-gencode=arch=compute_52,code=sm_52"
+        "-gencode=arch=compute_60,code=sm_60"
+        "-gencode=arch=compute_61,code=sm_61"
+        "-gencode=arch=compute_70,code=sm_70"
+        "-gencode=arch=compute_70,code=compute_70"
+      )
+    endif()
+  endif()
+
+
+  cuda_add_library(darknet-cuda STATIC ${darknet_cuda_sources})
+  target_include_directories(darknet-cuda PUBLIC
+    $<BUILD_INTERFACE:${darknet_src_dir}/include>
+    $<BUILD_INTERFACE:${darknet_src_dir}/src>
+  )
+
+  target_link_libraries(darknet PRIVATE darknet-cuda)
   target_compile_definitions(darknet PUBLIC GPU=1)
-  # TODO(sloretz) find_package(opencv)
-  # TODO(sloretz) cuda_add_library()
 endif()
 
 if(DARKNET_OPENCV)
