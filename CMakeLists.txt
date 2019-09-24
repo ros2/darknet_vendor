@@ -1,11 +1,10 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.10)
 project(darknet_vendor VERSION 0.1.0)
 
 ####################
 # Build options
 ####################
 
-# TODO(sloretz) make these options do something
 option(DARKNET_CUDA "Build darknet with CUDA support" ON)
 option(DARKNET_OPENCV "Build darknet with OpenCV support" ON)
 
@@ -130,27 +129,15 @@ set(darknet_lib_c_sources
 ####################
 # Darknet Library
 ####################
-set(THREADS_PREFER_PTHREAD_FLAG True)
+# set(THREADS_PREFER_PTHREAD_FLAG True)
 find_package(Threads REQUIRED)
 
-add_library(darknet SHARED ${darknet_lib_c_sources} ${darknet_lib_cpp_sources})
-set_target_properties(darknet PROPERTIES LINKER_LANGUAGE C)
-target_include_directories(darknet PUBLIC
-  $<BUILD_INTERFACE:${darknet_src_dir}/include>
-  $<BUILD_INTERFACE:${darknet_src_dir}/src>
-  $<INSTALL_INTERFACE:include>
-)
-
 if(DARKNET_CUDA)
+  set(CMAKE_VERBOSE_MAKEFILE ON)
+  enable_language(CUDA)
   find_package(CUDA REQUIRED)
 
-  find_program(GCC_6_PATH gcc-6)
-  if(CUDA_VERSION VERSION_LESS "9.2" AND GCC_6_PATH)
-    set(CUDA_HOST_COMPILER "${GCC_6_PATH}")
-  endif()
-  message(STATUS "Compiling cuda files with ${CUDA_HOST_COMPILER}")
-
-  if(NOT SET DARKNET_VENDOR_CUDA_FLAGS)
+  if(NOT DEFINED DARKNET_VENDOR_CUDA_FLAGS)
     # Flags taken from https://arnon.dk/matching-sm-architectures-arch-and-gencode-for-various-nvidia-cards/
     if(CUDA_VERSION VERSION_GREATER 10)
       set(DARKNET_VENDOR_CUDA_FLAGS
@@ -175,17 +162,27 @@ if(DARKNET_CUDA)
       )
     endif()
   endif()
-
-
-  cuda_add_library(darknet-cuda STATIC ${darknet_cuda_sources})
-  target_include_directories(darknet-cuda PUBLIC
-    $<BUILD_INTERFACE:${darknet_src_dir}/include>
-    $<BUILD_INTERFACE:${darknet_src_dir}/src>
-  )
-
-  target_link_libraries(darknet PRIVATE darknet-cuda)
-  target_compile_definitions(darknet PUBLIC GPU=1)
 endif()
+
+if (DARKNET_CUDA)
+  add_library(darknet SHARED ${darknet_lib_c_sources} ${darknet_lib_cpp_sources} ${darknet_cuda_sources})
+  target_compile_options(darknet INTERFACE
+    $<$<COMPILE_LANGUAGE:CUDA>:${DARKNET_VENDOR_CUDA_FLAGS}>
+  )
+  target_compile_definitions(darknet PUBLIC GPU=1)
+  target_link_libraries(darknet PUBLIC
+    cuda cudart cublas curand
+  )
+else()
+  add_library(darknet SHARED ${darknet_lib_c_sources} ${darknet_lib_cpp_sources})
+endif()
+
+set_target_properties(darknet PROPERTIES LINKER_LANGUAGE C)
+target_include_directories(darknet PUBLIC
+  $<BUILD_INTERFACE:${darknet_src_dir}/include>
+  $<BUILD_INTERFACE:${darknet_src_dir}/src>
+  $<INSTALL_INTERFACE:include>
+)
 
 if(DARKNET_OPENCV)
   find_package(OpenCV REQUIRED)
@@ -221,7 +218,6 @@ configure_file("include/darknet_vendor/version.h.in" "version.h" @ONLY)
 add_executable(darknet_exec ${darknet_exec_c_sources})
 target_link_libraries(darknet_exec PUBLIC darknet)
 set_target_properties(darknet_exec PROPERTIES OUTPUT_NAME "darknet")
-
 
 ####################
 # ProjectConfig.cmake
