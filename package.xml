@@ -11,6 +11,14 @@
 
   <buildtool_depend>cmake</buildtool_depend>
 
+  <depend>libopencv-dev</depend>
+
+  <!-- nvidia-cuda-dev is just the libraries to link against -->
+  <exec_depend>nvidia-cuda-dev</exec_depend>
+
+  <!-- nvidia-cuda includes nvidia-cuda-dev plus the nvcc compiler -->
+  <build_depend>nvidia-cuda</build_depend>
+
   <export>
     <build_type>cmake</build_type>
   </export>
