@@ -133,12 +133,11 @@ set(darknet_lib_c_sources
 find_package(Threads REQUIRED)
 
 if(DARKNET_CUDA)
-  set(CMAKE_VERBOSE_MAKEFILE ON)
   enable_language(CUDA)
   find_package(CUDA REQUIRED)
 
+  # Flags taken from https://arnon.dk/matching-sm-architectures-arch-and-gencode-for-various-nvidia-cards/
   if(NOT DEFINED DARKNET_VENDOR_CUDA_FLAGS)
-    # Flags taken from https://arnon.dk/matching-sm-architectures-arch-and-gencode-for-various-nvidia-cards/
     if(CUDA_VERSION VERSION_GREATER 10)
       set(DARKNET_VENDOR_CUDA_FLAGS
         "-arch=sm_50"
@@ -162,9 +161,7 @@ if(DARKNET_CUDA)
       )
     endif()
   endif()
-endif()
 
-if (DARKNET_CUDA)
   add_library(darknet SHARED ${darknet_lib_c_sources} ${darknet_lib_cpp_sources} ${darknet_cuda_sources})
   target_compile_options(darknet INTERFACE
     $<$<COMPILE_LANGUAGE:CUDA>:${DARKNET_VENDOR_CUDA_FLAGS}>
@@ -173,7 +170,7 @@ if (DARKNET_CUDA)
   target_link_libraries(darknet PUBLIC
     cuda cudart cublas curand
   )
-else()
+else()  # not using CUDA
   add_library(darknet SHARED ${darknet_lib_c_sources} ${darknet_lib_cpp_sources})
 endif()
 
