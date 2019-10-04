@@ -30,3 +30,39 @@ The package includes `package.xml` and should build fine using ROS 2 Dashing.
 ```
 colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release --packages-select darknet_vendor
 ```
+
+# Using darknet
+
+If you are using `ament_cmake`, use `ament_target_dependencies()` as normal.
+
+```CMake
+
+find_package(darknet_vendor REQUIRED)
+
+#...
+
+ament_target_dependencies(my_library_or_executable_target
+  darknet_vendor)
+```
+
+Otherwise, use the exported target `darknet_vendor::darknet_vendor`
+
+```CMake
+find_package(darknet_vendor REQUIRED)
+
+#...
+
+target_link_libraries(my_library_or_executable_target PUBLIC darknet_vendor::darknet_vendor)
+```
+
+Then include the `darknet.h` header in your project to make darknet functions available.
+
+```C
+#include <darknet.h>
+```
+
+Alternatively, include `darknet_vendor/darknet_vendor.h` to get access to some extra preprocessor definitions.
+
+```C
+#include <darknet_vendor/darknet_vendor.h>
+```
