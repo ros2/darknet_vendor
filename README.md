@@ -61,7 +61,7 @@ Then include the `darknet.h` header in your project to make darknet functions av
 #include <darknet.h>
 ```
 
-Alternatively, include `darknet_vendor/darknet_vendor.h` to get access to some extra preprocessor definitions.
+Alternatively, include `darknet_vendor/darknet_vendor.h` to get preprocessor definitions with info about the installed `darknet_vendor` version.
 
 ```C
 #include <darknet_vendor/darknet_vendor.h>
