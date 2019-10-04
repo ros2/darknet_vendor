@@ -1,0 +1,20 @@
+@PACKAGE_INIT@
+
+find_package(Threads)
+
+if(@DARKNET_OPENCV@)
+  find_package(OpenCV REQUIRED)
+endif()
+
+# Export targets for modern-style CMake code
+if(NOT TARGET darknet_vendor::darknet_vendor)
+  include("@PACKAGE_SHARE_CMAKE_INSTALL_DIR@/darknet_vendor-targets.cmake")
+endif()
+
+# Set standard variables for old-style CMake code
+set_and_check(darknet_vendor_INCLUDE_DIRS "@PACKAGE_INCLUDE_INSTALL_DIR@")
+set(darknet_vendor_LIBRARIES "darknet_vendor::darknet_vendor")
+set_and_check(darknet_vendor_EXECUTABLE "@PACKAGE_EXEC_INSTALL_DIR@/darknet")
+set(darknet_vendor_VERSION_MAJOR "@PROJECT_VERSION_MAJOR@")
+set(darknet_vendor_VERSION_MINOR "@PROJECT_VERSION_MINOR@")
+set(darknet_vendor_VERSION_PATCH "@PROJECT_VERSION_PATCH@")
