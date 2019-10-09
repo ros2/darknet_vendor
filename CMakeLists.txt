@@ -163,7 +163,7 @@ if(DARKNET_CUDA)
   endif()
 
   add_library(darknet SHARED ${darknet_lib_c_sources} ${darknet_lib_cpp_sources} ${darknet_cuda_sources})
-  target_compile_options(darknet INTERFACE
+  target_compile_options(darknet PRIVATE
     $<$<COMPILE_LANGUAGE:CUDA>:${DARKNET_VENDOR_CUDA_FLAGS}>
   )
   target_compile_definitions(darknet PUBLIC GPU=1)

@@ -15,18 +15,8 @@
 #ifndef DARKNET_VENDOR__DARKNET_VENDOR_H_
 #define DARKNET_VENDOR__DARKNET_VENDOR_H_
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
-
 #include <darknet.h>
 #include <darknet_vendor/version.h>
-
-#ifdef __cplusplus
-}
-#endif
-
 
 #endif  // DARKNET_VENDOR__DARKNET_VENDOR_H_
 
