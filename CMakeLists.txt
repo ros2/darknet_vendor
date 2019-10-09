@@ -307,6 +307,14 @@ install(
     "share/darknet"
 )
 
+# Add an entry to the ament index
+install(
+  FILES
+    resource/darknet_vendor
+  DESTINATION
+    "share/ament_index/resource_index/packages/"
+)
+
 # Install license files
 install(
   FILES
