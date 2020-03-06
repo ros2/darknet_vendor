@@ -14,6 +14,8 @@ option(DARKNET_OPENCV "Build darknet with OpenCV support" ON)
 
 if(CMAKE_VERSION VERSION_LESS "3.11")
   include("cmake/FetchContent.cmake")
+else()
+  include(FetchContent)
 endif()
 
 # Same version as Debian Buster
